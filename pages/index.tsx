@@ -55,12 +55,20 @@ export default function Home() {
           Sistem dokumentasi medis yang membantu Anda dalam mencatat dan
           mengelola data SOAP dengan bantuan AI.
         </p>
-        <Link
-          href="/soap/new"
-          className="inline-block bg-white text-primary-600 px-6 py-3 rounded-md font-semibold hover:bg-primary-50 transition-colors"
-        >
-          Buat SOAP Baru
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/soap/step/1"
+            className="inline-block bg-white text-primary-600 px-6 py-3 rounded-md font-semibold hover:bg-primary-50 transition-colors shadow-md"
+          >
+            🚀 Mulai SOAP Flow Baru (Multi-Step)
+          </Link>
+          <Link
+            href="/soap/new"
+            className="inline-block bg-primary-700 text-white px-6 py-3 rounded-md font-semibold hover:bg-primary-600 transition-colors border border-primary-500"
+          >
+            Buat SOAP Manual
+          </Link>
+        </div>
       </div>
 
       {/* Statistics */}

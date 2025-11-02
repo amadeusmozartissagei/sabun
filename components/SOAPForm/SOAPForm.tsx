@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useSOAPForm } from '@/hooks/useSOAPForm';
 import { SOAPData } from '@/types/soap';
 import SOAPField from './SOAPField';
@@ -31,6 +31,11 @@ const SOAPForm: React.FC<SOAPFormProps> = ({
       console.error('Gemini API error:', error);
     },
   });
+
+  // State untuk menyimpan AI suggestions per section
+  const [aiSuggestions, setAiSuggestions] = useState<{
+    [key in 'subjective' | 'objective' | 'assessment' | 'plan']?: string;
+  }>({});
 
   const buildContextForAI = useCallback((section: 'subjective' | 'objective' | 'assessment' | 'plan'): string => {
     const currentValue = formData[section] || '';
@@ -83,10 +88,35 @@ ${currentValue || '(Belum diisi)'}
     const context = buildContextForAI(section);
     const suggestion = await getSuggestion(section, context);
     
+    // Store suggestion instead of directly updating field
+    if (suggestion) {
+      setAiSuggestions((prev) => ({
+        ...prev,
+        [section]: suggestion,
+      }));
+    }
+  }, [buildContextForAI, getSuggestion, clearError]);
+
+  const handleUseAISuggestion = useCallback((section: 'subjective' | 'objective' | 'assessment' | 'plan') => {
+    const suggestion = aiSuggestions[section];
     if (suggestion) {
       updateField(section, suggestion);
+      // Clear suggestion setelah digunakan
+      setAiSuggestions((prev) => {
+        const newSuggestions = { ...prev };
+        delete newSuggestions[section];
+        return newSuggestions;
+      });
     }
-  }, [buildContextForAI, getSuggestion, updateField, clearError]);
+  }, [aiSuggestions, updateField]);
+
+  const handleDismissAISuggestion = useCallback((section: 'subjective' | 'objective' | 'assessment' | 'plan') => {
+    setAiSuggestions((prev) => {
+      const newSuggestions = { ...prev };
+      delete newSuggestions[section];
+      return newSuggestions;
+    });
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -166,6 +196,9 @@ ${currentValue || '(Belum diisi)'}
         onGeminiSuggest={() => handleGeminiSuggest('subjective')}
         isGeminiLoading={isGeminiLoading}
         placeholder="Masukkan keluhan subjektif pasien (gejala yang dirasakan pasien)"
+        aiSuggestion={aiSuggestions.subjective}
+        onUseAISuggestion={() => handleUseAISuggestion('subjective')}
+        onDismissAISuggestion={() => handleDismissAISuggestion('subjective')}
       />
 
       <SOAPField
@@ -176,6 +209,9 @@ ${currentValue || '(Belum diisi)'}
         onGeminiSuggest={() => handleGeminiSuggest('objective')}
         isGeminiLoading={isGeminiLoading}
         placeholder="Masukkan temuan objektif (hasil pemeriksaan fisik, tanda vital, dll)"
+        aiSuggestion={aiSuggestions.objective}
+        onUseAISuggestion={() => handleUseAISuggestion('objective')}
+        onDismissAISuggestion={() => handleDismissAISuggestion('objective')}
       />
 
       <SOAPField
@@ -186,6 +222,9 @@ ${currentValue || '(Belum diisi)'}
         onGeminiSuggest={() => handleGeminiSuggest('assessment')}
         isGeminiLoading={isGeminiLoading}
         placeholder="Masukkan assessment (diagnosa atau analisis kondisi pasien)"
+        aiSuggestion={aiSuggestions.assessment}
+        onUseAISuggestion={() => handleUseAISuggestion('assessment')}
+        onDismissAISuggestion={() => handleDismissAISuggestion('assessment')}
       />
 
       <SOAPField
@@ -196,6 +235,9 @@ ${currentValue || '(Belum diisi)'}
         onGeminiSuggest={() => handleGeminiSuggest('plan')}
         isGeminiLoading={isGeminiLoading}
         placeholder="Masukkan rencana tindakan (pengobatan, follow-up, dll)"
+        aiSuggestion={aiSuggestions.plan}
+        onUseAISuggestion={() => handleUseAISuggestion('plan')}
+        onDismissAISuggestion={() => handleDismissAISuggestion('plan')}
       />
 
       {/* Error message */}
