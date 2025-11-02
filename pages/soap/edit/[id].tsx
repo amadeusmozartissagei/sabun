@@ -38,8 +38,8 @@ export default function EditSOAP() {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Memuat data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Memuat data...</p>
         </div>
       </div>
     );
@@ -52,16 +52,16 @@ export default function EditSOAP() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
           Edit Catatan SOAP
         </h1>
-        <p className="text-gray-600">
-          Edit catatan SOAP untuk pasien: <strong>{record.patientName}</strong>
+        <p className="text-gray-600 dark:text-gray-400">
+          Edit catatan SOAP untuk pasien: <strong className="dark:text-white">{record.patientName}</strong>
         </p>
       </div>
 
       {showSuccess && (
-        <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+        <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded">
           <p className="font-medium">✓ Catatan SOAP berhasil diperbarui!</p>
           <p className="text-sm">Mengalihkan ke halaman riwayat...</p>
         </div>

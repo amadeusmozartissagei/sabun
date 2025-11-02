@@ -21,17 +21,17 @@ export default function NewSOAP() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
           Catat SOAP Baru
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Isi formulir di bawah ini untuk membuat catatan SOAP baru. Gunakan
           tombol "Dapatkan Saran AI" untuk mendapatkan bantuan dari Gemini AI.
         </p>
       </div>
 
       {showSuccess && (
-        <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+        <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded">
           <p className="font-medium">✓ Catatan SOAP berhasil disimpan!</p>
           <p className="text-sm">Mengalihkan ke halaman riwayat...</p>
         </div>

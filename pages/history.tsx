@@ -59,24 +59,24 @@ export default function History() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">Riwayat SOAP</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Riwayat SOAP</h1>
       </div>
 
       {/* Search */}
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition-colors">
         <input
           type="text"
           placeholder="Cari berdasarkan nama pasien atau isi catatan..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
         />
       </div>
 
       {/* Records List */}
       {filteredRecords.length > 0 ? (
         <>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Menampilkan {filteredRecords.length} dari {records.length} catatan
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -91,8 +91,8 @@ export default function History() {
           </div>
         </>
       ) : (
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <p className="text-gray-500 text-lg mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center transition-colors">
+          <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">
             {searchTerm
               ? 'Tidak ada catatan yang sesuai dengan pencarian'
               : 'Belum ada catatan SOAP'}
@@ -100,7 +100,7 @@ export default function History() {
           {!searchTerm && (
             <a
               href="/soap/new"
-              className="inline-block text-primary-600 hover:text-primary-700 font-medium"
+              className="inline-block text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
               Buat catatan pertama →
             </a>
