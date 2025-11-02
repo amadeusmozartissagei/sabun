@@ -26,13 +26,13 @@ const SOAPRecordCard: React.FC<SOAPRecordCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-all">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-xl font-semibold text-gray-800">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
             {record.patientName}
           </h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             {formatDate(record.date)}
           </p>
         </div>
@@ -40,7 +40,7 @@ const SOAPRecordCard: React.FC<SOAPRecordCardProps> = ({
           {onEdit && (
             <button
               onClick={() => onEdit(record)}
-              className="p-2 text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+              className="p-2 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-md transition-colors"
               title="Edit"
             >
               <svg
@@ -61,7 +61,7 @@ const SOAPRecordCard: React.FC<SOAPRecordCardProps> = ({
           {onDelete && (
             <button
               onClick={() => record.id && onDelete(record.id)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+              className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
               title="Hapus"
             >
               <svg
@@ -84,25 +84,25 @@ const SOAPRecordCard: React.FC<SOAPRecordCardProps> = ({
 
       <div className="space-y-4">
         <div>
-          <h4 className="font-semibold text-gray-700 mb-2">Subjective</h4>
-          <p className="text-gray-600 text-sm line-clamp-2">{record.subjective}</p>
+          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Subjective</h4>
+          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{record.subjective}</p>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-700 mb-2">Objective</h4>
-          <p className="text-gray-600 text-sm line-clamp-2">{record.objective}</p>
+          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Objective</h4>
+          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{record.objective}</p>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-700 mb-2">Assessment</h4>
-          <p className="text-gray-600 text-sm line-clamp-2">{record.assessment}</p>
+          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Assessment</h4>
+          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{record.assessment}</p>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-700 mb-2">Plan</h4>
-          <p className="text-gray-600 text-sm line-clamp-2">{record.plan}</p>
+          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Plan</h4>
+          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">{record.plan}</p>
         </div>
       </div>
 
       {record.updatedAt && (
-        <p className="text-xs text-gray-400 mt-4">
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">
           Diperbarui: {formatDate(record.updatedAt)}
         </p>
       )}

@@ -75,12 +75,12 @@ export default function Step4SummaryPlan() {
   if (!flowData.subjective || !flowData.objective || !flowData.assessment) {
     return (
       <div className="max-w-4xl mx-auto">
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-md">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-md">
           <p className="font-medium">Data tidak lengkap</p>
           <p className="text-sm">Silakan lengkapi semua step terlebih dahulu.</p>
           <button
             onClick={() => router.push('/soap/step/1')}
-            className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            className="mt-3 px-4 py-2 bg-primary-600 dark:bg-primary-500 text-white rounded-md hover:bg-primary-700 dark:hover:bg-primary-600"
           >
             Kembali ke Step 1
           </button>
@@ -95,31 +95,31 @@ export default function Step4SummaryPlan() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-green-600 dark:bg-green-500 text-white flex items-center justify-center font-bold">
               ✓
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">Summary & Plan</h2>
-              <p className="text-sm text-gray-500">Ringkasan & Rencana Perawatan</p>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Summary & Plan</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Ringkasan & Rencana Perawatan</p>
             </div>
           </div>
-          <div className="text-sm text-gray-500">Step 4 dari 4</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">Step 4 dari 4</div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-green-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div className="bg-green-600 dark:bg-green-500 h-2 rounded-full" style={{ width: '100%' }}></div>
         </div>
       </div>
 
       {/* Error Alert */}
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex justify-between items-center">
+        <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-md flex justify-between items-center">
           <div>
             <p className="font-medium">⚠️ {error}</p>
           </div>
           <button
             type="button"
             onClick={() => setError(null)}
-            className="text-red-500 hover:text-red-700 font-bold text-xl"
+            className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold text-xl"
           >
             ×
           </button>
@@ -129,81 +129,81 @@ export default function Step4SummaryPlan() {
       {/* Summary Cards */}
       <div className="space-y-6">
         {/* Patient Info Card */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Informasi Pasien</h3>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Informasi Pasien</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <p className="text-sm text-gray-600">Nama Pasien</p>
-              <p className="font-semibold text-gray-800">{flowData.patientName || '-'}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Nama Pasien</p>
+              <p className="font-semibold text-gray-800 dark:text-white">{flowData.patientName || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Tanggal</p>
-              <p className="font-semibold text-gray-800">{flowData.date || '-'}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Tanggal</p>
+              <p className="font-semibold text-gray-800 dark:text-white">{flowData.date || '-'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">ID Pasien</p>
-              <p className="font-semibold text-gray-800">{flowData.patientId || '-'}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">ID Pasien</p>
+              <p className="font-semibold text-gray-800 dark:text-white">{flowData.patientId || '-'}</p>
             </div>
           </div>
         </div>
 
         {/* Subjective Summary */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">S</span>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+          <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">S</span>
             Subjective
           </h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+          <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-md p-4">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans">
               {flowData.subjective}
             </pre>
           </div>
         </div>
 
         {/* Objective Summary */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-sm">O</span>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+          <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center font-bold text-sm">O</span>
             Objective
           </h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+          <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-md p-4">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans">
               {flowData.objective}
             </pre>
           </div>
         </div>
 
         {/* Assessment Summary */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">A</span>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+          <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">A</span>
             Assessment
           </h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+          <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-md p-4">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans">
               {flowData.assessment}
             </pre>
           </div>
         </div>
 
         {/* Plan */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-3 text-gray-800 flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">P</span>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+          <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-sm">P</span>
             Plan
           </h3>
           {isGenerating ? (
-            <div className="bg-gray-50 border border-gray-200 rounded-md p-4 flex items-center gap-3">
-              <svg className="animate-spin h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24">
+            <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-md p-4 flex items-center gap-3">
+              <svg className="animate-spin h-5 w-5 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span className="text-sm text-gray-600">Mengenerate Plan...</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Mengenerate Plan...</span>
             </div>
           ) : (
             <>
-              <div className="bg-purple-50 border border-purple-200 rounded-md p-4 mb-4">
-                <p className="text-sm text-purple-700">Plan telah di-generate berdasarkan Subjective, Objective, dan Assessment. Silakan review dan edit jika diperlukan.</p>
+              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-md p-4 mb-4">
+                <p className="text-sm text-purple-700 dark:text-purple-400">Plan telah di-generate berdasarkan Subjective, Objective, dan Assessment. Silakan review dan edit jika diperlukan.</p>
               </div>
               <textarea
                 value={plan}
@@ -212,7 +212,7 @@ export default function Step4SummaryPlan() {
                   updateFlowData({ plan: e.target.value });
                 }}
                 rows={12}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 resize-y"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white resize-y"
                 placeholder="Plan akan muncul di sini setelah di-generate..."
               />
             </>
@@ -224,7 +224,7 @@ export default function Step4SummaryPlan() {
           <button
             type="button"
             onClick={() => router.push('/soap/step/3')}
-            className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+            className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             ← Kembali
           </button>
@@ -232,7 +232,7 @@ export default function Step4SummaryPlan() {
             type="button"
             onClick={handleSave}
             disabled={isSaving || isGenerating || !plan.trim()}
-            className="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-md hover:from-green-600 hover:to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+            className="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600 text-white rounded-md hover:from-green-600 hover:to-emerald-600 dark:hover:from-green-700 dark:hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
           >
             {isSaving ? (
               <>

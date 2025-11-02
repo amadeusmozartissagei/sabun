@@ -122,7 +122,7 @@ ${currentValue || '(Belum diisi)'}
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Gemini AI Error Alert */}
       {geminiError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex justify-between items-center">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-md flex justify-between items-center">
           <div>
             <p className="font-medium">⚠️ Gagal mengambil saran dari AI</p>
             <p className="text-sm">{geminiError}</p>
@@ -130,7 +130,7 @@ ${currentValue || '(Belum diisi)'}
           <button
             type="button"
             onClick={clearError}
-            className="text-red-500 hover:text-red-700 font-bold text-xl"
+            className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-bold text-xl"
             title="Tutup pesan error"
           >
             ×
@@ -139,8 +139,8 @@ ${currentValue || '(Belum diisi)'}
       )}
 
       {/* Patient Info */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
           Informasi Pasien
         </h2>
         
@@ -148,40 +148,40 @@ ${currentValue || '(Belum diisi)'}
           <div>
             <label
               htmlFor="patientName"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              Nama Pasien <span className="text-red-500">*</span>
+              Nama Pasien <span className="text-red-500 dark:text-red-400">*</span>
             </label>
             <input
               type="text"
               id="patientName"
               value={formData.patientName || ''}
               onChange={(e) => updateField('patientName', e.target.value)}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-white ${
                 errors.patientName
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-300 focus:ring-primary-500'
+                  ? 'border-red-500 dark:border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500'
               }`}
               placeholder="Masukkan nama pasien"
             />
             {errors.patientName && (
-              <p className="mt-1 text-sm text-red-500">{errors.patientName}</p>
+              <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.patientName}</p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="date"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              Tanggal <span className="text-red-500">*</span>
+              Tanggal <span className="text-red-500 dark:text-red-400">*</span>
             </label>
             <input
               type="date"
               id="date"
               value={formData.date || ''}
               onChange={(e) => updateField('date', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-white"
             />
           </div>
         </div>

@@ -14,11 +14,11 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
   sectionLabel,
 }) => {
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-5 shadow-lg animate-fade-in">
+    <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200 dark:border-purple-800 rounded-lg p-5 shadow-lg animate-fade-in transition-colors">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-2 rounded-lg">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 p-2 rounded-lg">
             <svg
               className="w-5 h-5 text-white"
               fill="none"
@@ -34,16 +34,16 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-800">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
               Saran AI untuk {sectionLabel}
             </h3>
-            <p className="text-sm text-gray-600">Dari Gemini AI</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Dari Gemini AI</p>
           </div>
         </div>
         <button
           type="button"
           onClick={onDismiss}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
+          className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           title="Tutup saran"
         >
           <svg
@@ -63,8 +63,8 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
       </div>
 
       {/* Suggestion Content */}
-      <div className="bg-white rounded-md p-4 mb-4 border border-purple-100 max-h-96 overflow-y-auto">
-        <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+      <div className="bg-white dark:bg-gray-800 rounded-md p-4 mb-4 border border-purple-100 dark:border-purple-900/50 max-h-96 overflow-y-auto transition-colors">
+        <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-sans">
           {suggestion}
         </pre>
       </div>
@@ -101,7 +101,7 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
       </div>
 
       {/* Info Badge */}
-      <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
+      <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
         <svg
           className="w-4 h-4"
           fill="none"
