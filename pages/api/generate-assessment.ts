@@ -39,24 +39,65 @@ ${subjective}
 OBJECTIVE (O):
 ${objective}
 
-Berdasarkan data Subjective dan Objective di atas, buatkan Assessment yang mencakup:
-- Primary Diagnosis: Diagnosis utama dengan ICD-10 jika relevan
-- Differential Diagnosis: Diagnosis banding yang perlu dipertimbangkan
-- Clinical Reasoning: Penalaran klinis yang menghubungkan gejala dan temuan
-- Problem List: Daftar masalah kesehatan yang ditemukan
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "primaryDiagnosis": {
+    "diagnosis": "Diagnosis utama",
+    "icd10": "Kode ICD-10 (jika relevan)"
+  },
+  "differentialDiagnosis": ["Diagnosis banding 1", "Diagnosis banding 2"],
+  "clinicalReasoning": "Penalaran klinis yang menghubungkan gejala dan temuan",
+  "problemList": ["Masalah 1", "Masalah 2"]
+}
 
-Berikan analisis yang kritis, evidence-based, dan membantu pengambilan keputusan klinis. Format dalam Bahasa Indonesia yang profesional.`;
+HUBUNGKAN gejala subjektif dengan temuan objektif untuk membuat analisis klinis yang komprehensif.
+PENTING: Response HARUS berupa JSON valid, tanpa teks tambahan apapun. Gunakan Bahasa Indonesia.`;
 
     const result = await ai.models.generateContent({
       model: 'gemini-2.0-flash-exp',
       contents: prompt,
     });
 
-    const assessment = result.text;
+    const rawResponse = result.text;
+    
+    // Extract JSON from response
+    const extractJSON = (text: string): any => {
+      try {
+        const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[1]);
+        }
+        const objectMatch = text.match(/\{[\s\S]*\}/);
+        if (objectMatch) {
+          return JSON.parse(objectMatch[0]);
+        }
+        return null;
+      } catch (error) {
+        console.error('[Extract JSON] Error:', error);
+        return null;
+      }
+    };
 
-    return res.status(200).json({
-      assessment: assessment.trim(),
-    });
+    const jsonData = extractJSON(rawResponse);
+    
+    if (jsonData) {
+      // Format to readable text
+      const primary = jsonData.primaryDiagnosis || {};
+      const differential = Array.isArray(jsonData.differentialDiagnosis) ? jsonData.differentialDiagnosis : [];
+      const problems = Array.isArray(jsonData.problemList) ? jsonData.problemList : [];
+      
+      const formattedText = `DIAGNOSIS UTAMA:\n${primary.diagnosis || '[Belum diisi]'}${primary.icd10 ? ` (ICD-10: ${primary.icd10})` : ''}\n\nDIAGNOSIS BANDING:\n${differential.map((d: string, i: number) => `${i + 1}. ${d}`).join('\n') || '[Belum ada diagnosis banding]'}\n\nPENALARAN KLINIS:\n${jsonData.clinicalReasoning || '[Belum diisi]'}\n\nDAFTAR MASALAH:\n${problems.map((p: string, i: number) => `${i + 1}. ${p}`).join('\n') || '[Belum ada masalah teridentifikasi]'}`;
+      
+      return res.status(200).json({
+        assessment: formattedText,
+        data: jsonData,
+      });
+    } else {
+      // Fallback to raw text
+      return res.status(200).json({
+        assessment: rawResponse.trim(),
+      });
+    }
   } catch (error) {
     console.error('[Generate Assessment] Error:', error);
     

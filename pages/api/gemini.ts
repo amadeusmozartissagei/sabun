@@ -7,44 +7,145 @@ interface GeminiRequest {
   context: string;
 }
 
+// Helper function to extract JSON from response
+function extractJSON(text: string): any {
+  try {
+    // Try to find JSON in code blocks
+    const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[1]);
+    }
+    
+    // Try to find JSON object directly
+    const objectMatch = text.match(/\{[\s\S]*\}/);
+    if (objectMatch) {
+      return JSON.parse(objectMatch[0]);
+    }
+    
+    // If no JSON found, return null
+    return null;
+  } catch (error) {
+    console.error('[Extract JSON] Error:', error);
+    return null;
+  }
+}
+
+// Helper function to format JSON to readable text
+function formatJSONToText(data: any, section: string): string {
+  try {
+    if (section === 'subjective') {
+      return `Chief Complaint (CC):\n${data.cc || '[Belum diisi]'}\n\nHistory of Present Illness (HPI):\n${data.hpi || '[Belum diisi]'}\n\nReview of Systems (ROS):\n${data.ros || '[Belum diisi]'}\n\nRingkasan:\n${data.summary || '[Belum diisi]'}`;
+    }
+    
+    if (section === 'objective') {
+      const vs = data.vitalSigns || {};
+      return `VITAL SIGNS:\n- TD: ${vs.td || '[kosong]'}\n- Nadi: ${vs.nadi || '[kosong]'}\n- RR: ${vs.rr || '[kosong]'}\n- Suhu: ${vs.suhu || '[kosong]'}\n- SpO2: ${vs.spo2 || '[kosong]'}\n\nTAMPILAN UMUM:\n${data.generalAppearance || '[Belum diisi]'}\n\nPEMERIKSAAN FISIK:\n${data.physicalExamination || '[Belum diisi]'}\n\nLABORATORIUM/INVESTIGASI:\n${data.laboratory || '[Belum diisi]'}`;
+    }
+    
+    if (section === 'assessment') {
+      const primary = data.primaryDiagnosis || {};
+      const differential = Array.isArray(data.differentialDiagnosis) ? data.differentialDiagnosis : [];
+      const problems = Array.isArray(data.problemList) ? data.problemList : [];
+      
+      return `DIAGNOSIS UTAMA:\n${primary.diagnosis || '[Belum diisi]'}${primary.icd10 ? ` (ICD-10: ${primary.icd10})` : ''}\n\nDIAGNOSIS BANDING:\n${differential.map((d: string, i: number) => `${i + 1}. ${d}`).join('\n') || '[Belum ada diagnosis banding]'}\n\nPENALARAN KLINIS:\n${data.clinicalReasoning || '[Belum diisi]'}\n\nDAFTAR MASALAH:\n${problems.map((p: string, i: number) => `${i + 1}. ${p}`).join('\n') || '[Belum ada masalah teridentifikasi]'}`;
+    }
+    
+    if (section === 'plan') {
+      const meds = Array.isArray(data.medications) ? data.medications : [];
+      const inv = Array.isArray(data.investigations) ? data.investigations : [];
+      const proc = Array.isArray(data.procedures) ? data.procedures : [];
+      
+      let planText = '';
+      
+      if (meds.length > 0) {
+        planText += `OBAT-OBATAN:\n${meds.map((m: any, i: number) => 
+          `${i + 1}. ${m.nama || 'Obat'} - ${m.dosis || ''} ${m.rute || ''}, ${m.durasi || ''}`
+        ).join('\n')}\n\n`;
+      }
+      
+      if (inv.length > 0) {
+        planText += `PEMERIKSAAN LANJUTAN:\n${inv.map((item: string, i: number) => `${i + 1}. ${item}`).join('\n')}\n\n`;
+      }
+      
+      if (proc.length > 0) {
+        planText += `PROSEDUR:\n${proc.map((item: string, i: number) => `${i + 1}. ${item}`).join('\n')}\n\n`;
+      }
+      
+      planText += `EDUKASI PASIEN:\n${data.education || '[Belum diisi]'}\n\nFOLLOW-UP:\n${data.followUp || '[Belum diisi]'}\n\nRUJUKAN:\n${data.consultation || '[Tidak ada rujukan]'}`;
+      
+      return planText;
+    }
+    
+    // Fallback: return JSON stringified
+    return JSON.stringify(data, null, 2);
+  } catch (error) {
+    console.error('[Format JSON] Error:', error);
+    return JSON.stringify(data, null, 2);
+  }
+}
+
 const PROMPTS = {
   subjective: `Anda adalah asisten medis profesional yang membantu dokter mengisi bagian Subjective (S) dalam catatan SOAP.
-Tugas Anda: Berikan saran struktur keluhan subjektif pasien yang jelas dan sistematis.
-Format yang disarankan: 
-- CC (Chief Complaint): Keluhan utama
-- HPI (History of Present Illness): Riwayat penyakit sekarang dengan LOCATES (Location, Onset, Character, Associated symptoms, Timing, Exacerbating/Relieving factors, Severity)
-- ROS (Review of Systems): Tinjauan sistem tubuh
-Berikan saran yang profesional dan sesuai standar medis.`,
+Berikan saran struktur keluhan subjektif pasien yang jelas dan sistematis.
+
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "cc": "Chief Complaint - Keluhan utama pasien",
+  "hpi": "History of Present Illness - Riwayat penyakit dengan LOCATES",
+  "ros": "Review of Systems - Tinjauan sistem tubuh",
+  "summary": "Ringkasan singkat keluhan subjektif"
+}`,
 
   objective: `Anda adalah asisten medis profesional yang membantu dokter mengisi bagian Objective (O) dalam catatan SOAP.
-Tugas Anda: Berikan saran struktur temuan objektif yang sistematis.
-Format yang disarankan:
-- Vital Signs: TD, Nadi, RR, Suhu, SpO2
-- General Appearance: Tampilan umum pasien
-- Physical Examination: Temuan pemeriksaan fisik sesuai sistem tubuh
-- Laboratory/Investigations: Hasil laboratorium atau pemeriksaan penunjang
-Berikan saran yang jelas dan terstruktur sesuai standar medis.`,
+Berikan saran struktur temuan objektif yang sistematis.
+
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "vitalSigns": {
+    "td": "Tekanan darah (contoh: 120/80 mmHg atau [kosong])",
+    "nadi": "Denyut nadi (contoh: 80x/menit atau [kosong])",
+    "rr": "Respirasi rate (contoh: 20x/menit atau [kosong])",
+    "suhu": "Suhu tubuh (contoh: 36.5°C atau [kosong])",
+    "spo2": "SpO2 (contoh: 98% atau [kosong])"
+  },
+  "generalAppearance": "Tampilan umum pasien (contoh atau [kosong])",
+  "physicalExamination": "Temuan pemeriksaan fisik sesuai sistem tubuh",
+  "laboratory": "Hasil laboratorium atau pemeriksaan penunjang (jika ada)"
+}`,
 
   assessment: `Anda adalah asisten medis profesional yang membantu dokter membuat Assessment (A) dalam catatan SOAP.
-Tugas Anda: Berikan analisis diagnosis dan evaluasi klinis berdasarkan data Subjective dan Objective.
 PENTING: Assessment adalah TITIK KRITIS pengambilan keputusan klinis.
-Format yang disarankan:
-- Primary Diagnosis: Diagnosis utama dengan ICD-10 jika relevan
-- Differential Diagnosis: Diagnosis banding yang perlu dipertimbangkan
-- Clinical Reasoning: Penalaran klinis yang menghubungkan gejala dan temuan
-- Problem List: Daftar masalah kesehatan yang ditemukan
-Berikan analisis yang kritis, evidence-based, dan membantu pengambilan keputusan klinis.`,
+
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "primaryDiagnosis": {
+    "diagnosis": "Diagnosis utama",
+    "icd10": "Kode ICD-10 (jika relevan)"
+  },
+  "differentialDiagnosis": ["Diagnosis banding 1", "Diagnosis banding 2"],
+  "clinicalReasoning": "Penalaran klinis yang menghubungkan gejala dan temuan",
+  "problemList": ["Masalah 1", "Masalah 2", "Masalah 3"]
+}`,
 
   plan: `Anda adalah asisten medis profesional yang membantu dokter menyusun Plan (P) dalam catatan SOAP.
-Tugas Anda: Berikan rekomendasi rencana perawatan komprehensif berdasarkan assessment.
-Format yang disarankan mengikuti SOAPIE:
-- Medications: Obat-obatan dengan dosis, rute, dan durasi
-- Investigations: Pemeriksaan lanjutan yang diperlukan
-- Procedures: Prosedur yang akan dilakukan
-- Education: Edukasi pasien
-- Follow-up: Rencana kontrol dan monitoring
-- Consultation: Rujukan spesialis jika diperlukan
-Berikan rencana yang spesifik, actionable, dan berdasarkan evidence-based medicine.`,
+Berikan rekomendasi rencana perawatan komprehensif.
+
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "medications": [
+    {
+      "nama": "Nama obat",
+      "dosis": "Dosis",
+      "rute": "Rute pemberian (oral/IV/IM/dll)",
+      "durasi": "Durasi pengobatan"
+    }
+  ],
+  "investigations": ["Pemeriksaan 1", "Pemeriksaan 2"],
+  "procedures": ["Prosedur 1", "Prosedur 2"],
+  "education": "Edukasi pasien",
+  "followUp": "Rencana kontrol dan monitoring",
+  "consultation": "Rujukan spesialis (jika diperlukan)"
+}`,
 };
 
 export default async function handler(
@@ -81,14 +182,14 @@ export default async function handler(
       // Untuk Assessment dan Plan, beri konteks lebih lengkap
       enhancedPrompt = `${PROMPTS[section]}
 
-INFORMASI YANG SUDAH TERKUNPUL:
+KONTEKS DATA:
 ${contextSection}
 
 ${section === 'assessment' 
   ? 'HUBUNGKAN gejala subjektif dengan temuan objektif untuk membuat analisis klinis yang komprehensif.'
   : 'BUAT rencana perawatan yang spesifik dan dapat ditindaklanjuti berdasarkan assessment di atas.'}
 
-Berikan output dalam Bahasa Indonesia yang profesional:`;
+PENTING: Response HARUS berupa JSON valid, tanpa teks tambahan apapun. Gunakan Bahasa Indonesia untuk semua nilai.`;
     } else {
       // Untuk Subjective dan Objective, template sederhana
       enhancedPrompt = `${PROMPTS[section]}
@@ -96,7 +197,7 @@ Berikan output dalam Bahasa Indonesia yang profesional:`;
 KONTEKS SAAT INI:
 ${contextSection}
 
-Berikan saran yang relevan, jelas, dan profesional dalam Bahasa Indonesia:`;
+PENTING: Response HARUS berupa JSON valid, tanpa teks tambahan apapun. Gunakan Bahasa Indonesia untuk semua nilai.`;
     }
 
     console.log('[Gemini API] Section:', section);
@@ -108,14 +209,29 @@ Berikan saran yang relevan, jelas, dan profesional dalam Bahasa Indonesia:`;
       contents: enhancedPrompt,
     });
     
-    const suggestion = result.text;
+    const rawResponse = result.text || '';
+    console.log('[Gemini API] Raw response:', rawResponse.substring(0, 200));
 
-    console.log('[Gemini API] Response length:', suggestion.length);
-
-    return res.status(200).json({
-      suggestion: suggestion.trim(),
-      confidence: 0.8, // Placeholder confidence score
-    });
+    // Extract JSON from response
+    const jsonData = extractJSON(rawResponse);
+    
+    if (jsonData) {
+      // Format JSON to readable text for display
+      const formattedText = formatJSONToText(jsonData, section);
+      
+      return res.status(200).json({
+        suggestion: formattedText,
+        data: jsonData, // Also return structured data
+        confidence: 0.8,
+      } as GeminiResponse);
+    } else {
+      // Fallback: return raw text if JSON parsing fails
+      console.warn('[Gemini API] Failed to extract JSON, using raw text');
+      return res.status(200).json({
+        suggestion: rawResponse.trim(),
+        confidence: 0.7,
+      } as GeminiResponse);
+    }
   } catch (error) {
     console.error('[Gemini API] Error details:', error);
     console.error('[Gemini API] Error type:', typeof error);

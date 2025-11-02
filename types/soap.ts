@@ -23,6 +23,7 @@ export interface Patient {
 export interface GeminiResponse {
   suggestion: string;
   confidence?: number;
+  data?: any; // Structured JSON data from AI
 }
 
 

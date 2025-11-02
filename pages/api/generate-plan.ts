@@ -43,26 +43,87 @@ ${objective}
 ASSESSMENT (A):
 ${assessment}
 
-Berdasarkan data di atas, buatkan rencana perawatan komprehensif yang mencakup:
-- Medications: Obat-obatan dengan dosis, rute, dan durasi
-- Investigations: Pemeriksaan lanjutan yang diperlukan
-- Procedures: Prosedur yang akan dilakukan
-- Education: Edukasi pasien
-- Follow-up: Rencana kontrol dan monitoring
-- Consultation: Rujukan spesialis jika diperlukan
+WAJIB: Response HANYA dalam format JSON berikut, tanpa tambahan teks apapun:
+{
+  "medications": [
+    {
+      "nama": "Nama obat",
+      "dosis": "Dosis",
+      "rute": "Rute pemberian (oral/IV/IM/dll)",
+      "durasi": "Durasi pengobatan"
+    }
+  ],
+  "investigations": ["Pemeriksaan 1", "Pemeriksaan 2"],
+  "procedures": ["Prosedur 1", "Prosedur 2"],
+  "education": "Edukasi pasien",
+  "followUp": "Rencana kontrol dan monitoring",
+  "consultation": "Rujukan spesialis (jika diperlukan)"
+}
 
-Berikan rencana yang spesifik, actionable, dan berdasarkan evidence-based medicine. Format dalam Bahasa Indonesia yang profesional.`;
+BUAT rencana perawatan yang spesifik dan dapat ditindaklanjuti berdasarkan assessment di atas.
+PENTING: Response HARUS berupa JSON valid, tanpa teks tambahan apapun. Gunakan Bahasa Indonesia.`;
 
     const result = await ai.models.generateContent({
       model: 'gemini-2.0-flash-exp',
       contents: prompt,
     });
 
-    const plan = result.text;
+    const rawResponse = result.text;
+    
+    // Extract JSON from response
+    const extractJSON = (text: string): any => {
+      try {
+        const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[1]);
+        }
+        const objectMatch = text.match(/\{[\s\S]*\}/);
+        if (objectMatch) {
+          return JSON.parse(objectMatch[0]);
+        }
+        return null;
+      } catch (error) {
+        console.error('[Extract JSON] Error:', error);
+        return null;
+      }
+    };
 
-    return res.status(200).json({
-      plan: plan.trim(),
-    });
+    const jsonData = extractJSON(rawResponse);
+    
+    if (jsonData) {
+      // Format to readable text
+      const meds = Array.isArray(jsonData.medications) ? jsonData.medications : [];
+      const inv = Array.isArray(jsonData.investigations) ? jsonData.investigations : [];
+      const proc = Array.isArray(jsonData.procedures) ? jsonData.procedures : [];
+      
+      let planText = '';
+      
+      if (meds.length > 0) {
+        planText += `OBAT-OBATAN:\n${meds.map((m: any, i: number) => 
+          `${i + 1}. ${m.nama || 'Obat'} - ${m.dosis || ''} ${m.rute || ''}, ${m.durasi || ''}`
+        ).join('\n')}\n\n`;
+      }
+      
+      if (inv.length > 0) {
+        planText += `PEMERIKSAAN LANJUTAN:\n${inv.map((item: string, i: number) => `${i + 1}. ${item}`).join('\n')}\n\n`;
+      }
+      
+      if (proc.length > 0) {
+        planText += `PROSEDUR:\n${proc.map((item: string, i: number) => `${i + 1}. ${item}`).join('\n')}\n\n`;
+      }
+      
+      planText += `EDUKASI PASIEN:\n${jsonData.education || '[Belum diisi]'}\n\nFOLLOW-UP:\n${jsonData.followUp || '[Belum diisi]'}\n\nRUJUKAN:\n${jsonData.consultation || '[Tidak ada rujukan]'}`;
+      
+      return res.status(200).json({
+        plan: planText,
+        data: jsonData,
+      });
+    } else {
+      // Fallback to raw text
+      return res.status(200).json({
+        plan: rawResponse.trim(),
+      });
+    }
   } catch (error) {
     console.error('[Generate Plan] Error:', error);
     
