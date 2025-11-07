@@ -32,10 +32,10 @@ const SOAPField: React.FC<SOAPFieldProps> = ({
   return (
     <div className="space-y-4">
       {/* Main Field */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors">
         <div className="flex justify-between items-center mb-4">
-          <label className="text-lg font-semibold text-gray-800">
-            {label} <span className="text-red-500">*</span>
+          <label className="text-lg font-semibold text-gray-800 dark:text-white">
+            {label} <span className="text-red-500 dark:text-red-400">*</span>
           </label>
           {onGeminiSuggest && (
             <button

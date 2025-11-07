@@ -74,7 +74,7 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
         <button
           type="button"
           onClick={onUse}
-          className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-md hover:from-purple-600 hover:to-pink-600 transition-all font-medium flex items-center justify-center gap-2 shadow-md"
+          className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 text-white px-4 py-2 rounded-md hover:from-purple-600 hover:to-pink-600 dark:hover:from-purple-700 dark:hover:to-pink-700 transition-all font-medium flex items-center justify-center gap-2 shadow-md"
         >
           <svg
             className="w-4 h-4"
@@ -94,7 +94,7 @@ const AISuggestionBox: React.FC<AISuggestionBoxProps> = ({
         <button
           type="button"
           onClick={onDismiss}
-          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors font-medium"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
         >
           Abaikan
         </button>
